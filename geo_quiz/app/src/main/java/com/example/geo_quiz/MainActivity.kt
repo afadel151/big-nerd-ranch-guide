@@ -32,18 +32,48 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         binding.trueButton.setOnClickListener { view : View ->
-            Snackbar.make(binding.trueButton, R.string.correct_toast, Toast.LENGTH_SHORT).show()
+            checkAnswer(true)
         }
 
         binding.falseButton.setOnClickListener { view : View ->
+            checkAnswer(false)
+        }
+
+        binding.questionText.setOnClickListener { view ->
+            currentIndex = (currentIndex + 1) % questionBank.size
+            updateQuestion()
+        }
+
+        binding.previousButton.setOnClickListener { view ->
+            if (currentIndex > 1)
+            {
+                currentIndex = (currentIndex - 1) % questionBank.size
+                updateQuestion()
+            }
+        }
+        binding.nextButton.setOnClickListener { view ->
+            currentIndex = (currentIndex + 1) % questionBank.size
+            updateQuestion()
+        }
+        updateQuestion()
+    }
+
+    private fun checkAnswer(userAnswer: Boolean)
+    {
+        val validAnswer = questionBank[currentIndex].answer
+        if (userAnswer == validAnswer)
+        {
+            Snackbar.make(binding.trueButton, R.string.correct_toast, Toast.LENGTH_SHORT).show()
+        }else{
             Snackbar.make(binding.falseButton, R.string.incorrect_toast, Toast.LENGTH_SHORT).show()
         }
+    }
+    private fun updateQuestion()
+    {
         val questionTextResId = questionBank[currentIndex].textResId
         binding.questionText.setText(questionTextResId)
     }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
 
